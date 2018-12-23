@@ -1,0 +1,405 @@
+@extends('layout.lecturer')
+
+@section('content')
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <form action="{{url('lecturer/book/update_image/'.$book->previous_image)}}" method="post"
+                              enctype="multipart/form-data" id="form_update_image_previous">
+                            <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                            <div class="form-group">
+                                <label style="font-weight: normal; font-size: 15px" for="img_avatar"> Ảnh bìa mặt
+                                    trước</label>
+                                <input name="img_book" type="file" id="img_previous" accept=".jpg, .png, .gif, .jpeg"
+                                       style="height:0; width:0; visibility:hidden" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <img id="img_avatar_previous" src="{{url('image_book/'.$book->previous_image)}}"
+                                     style="width: 500px; height: 250px;"/>
+                            </div>
+                            <div class="form-group" style="padding-top: 2em">
+                                <div class="col-lg-3">
+                                    <input type="button" class="btn btn-warning text-center form-control"
+                                           onclick="showImagePreviewPrevious();"
+                                           value="Đổi ảnh"/>
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="submit" class="btn btn-success" value="Lưu thay đổi">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <form action="{{url('lecturer/book/update_image/'.$book->rear_image)}}" method="post"
+                              enctype="multipart/form-data" id="form_update_image_rear">
+                            <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                            <div class="form-group">
+                                <label style="font-weight: normal; font-size: 15px" for="img_avatar"> Ảnh bìa mặt
+                                    sau</label>
+                                <input name="img_book" type="file" id="img_rear" accept=".jpg, .png, .gif, .jpeg"
+                                       style="height:0; width:0; visibility:hidden" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <img id="img_avatar_rear" src="{{url('image_book/'.$book->rear_image)}}"
+                                     style="width: 500px; height: 250px;"/>
+                            </div>
+                            <div class="form-group" style="padding-top: 2em">
+                                <div class="col-lg-3">
+                                    <input type="button" class="btn btn-warning text-center form-control"
+                                           onclick="showImagePreviewRear();"
+                                           value="Đổi ảnh"/>
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="submit" class="btn btn-success" value="Lưu thay đổi">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Thông tin cuốn sách</strong>
+                    </div>
+                    <form action="{{url('lecturer/book/update_info/'. $book->id)}}" method="post"
+                          id="form_detail_book" enctype="multipart/form-data">
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+
+                        <div class="card-body card-block">
+                            <div class="form-group">
+                                <label for="name" class=" form-control-label">
+                                    Tên sách<b style="color: #ff2e44; font-size: 14px;">(*)</b>
+                                </label>
+                                <input type="text" name="name" id="name" value="{{$book->name}}"
+                                       placeholder="Tên của cuốn sách" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="author" class=" form-control-label">
+                                    Tác giả<b style="color: #ff2e44; font-size: 14px;">(*)</b>
+                                </label>
+                                <input type="text" name="author" id="author" value="{{$book->author}}"
+                                       placeholder="Họ tên của tác giả" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="topic" class=" form-control-label">
+                                    Thể loại<b style="color: #ff2e44; font-size: 14px;">(*)</b>
+                                </label>
+                                <select name="topic" id="topic" style="width: 100%; height: 2.5em;">
+                                    @foreach($topic as $tp)
+                                        @if($book->id_topic == $tp->id)
+                                            <option value="{{$tp->id}}" selected>{{$tp->name}}</option>
+                                        @else
+                                            <option value="{{$tp->id}}">{{$tp->name}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="publication_date" class=" form-control-label">
+                                    Ngày xuất bản<b style="color: #ff2e44; font-size: 14px;">(*)</b>
+                                </label>
+                                <input type="datetime" name="publication_date" id="publication_date"
+                                       value="{{date('m/d/Y', strtotime($book->publication_date))}}"
+                                       class="form-control">
+                            </div>
+                            {{-- check book is free or buy by coin --}}
+                            <div class="check_free form-group">
+                                <div class="form-group">
+                                    <label for="type_book" class=" form-control-label">
+                                        Loại sách<b style="color: #ff2e44; font-size: 14px;">(*)</b>
+                                    </label>
+                                    <select name="type_book" onchange="select_type_book()" id="type_book"
+                                            class="form-control">
+                                        @if($book->type_book == 0)
+                                            <option value="0" selected>Miễn phí</option>
+                                            <option value="1">Trả phí</option>
+                                        @else
+                                            <option value="0">Miễn phí</option>
+                                            <option value="1" selected>Trả phí</option>
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            @if($book->type_book == 0)
+                                <div id="div_coin" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="price" class=" form-control-label">
+                                            Giá cuốn sách<b style="color: #ff2e44; font-size: 14px;">(*)</b> -Đơn vị:
+                                            VNĐ
+                                        </label>
+                                        <input type="number" id="price" name="price" value="{{$book->price}}"
+                                               placeholder="Nhập giá cuốn sách" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sale" class="form-control-label">
+                                            Giảm giá (nếu có) -Đơn vị: VNĐ<b
+                                                    style="color: #ff2e44; font-size: 14px;"></b>
+                                        </label>
+                                        @if(is_null($book->sale))
+                                            <input type="number" id="sale" name="sale" value=""
+                                                   placeholder="Nhập giá khi đã hạ giá" class="form-control">
+                                        @else
+                                            <input type="number" id="sale" name="sale" value="{{$book->sale}}"
+                                                   placeholder="Nhập giá khi đã hạ giá" class="form-control">
+                                        @endif
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price_of_ebook" class="form-control-label">
+                                            Giá ebook <b style="color: #ff2e44; font-size: 14px;">(*)</b> -Đơn vị: VNĐ
+                                        </label>
+                                        <input type="number" id="price_of_ebook" name="price_of_ebook"
+                                               value="{{$book->price_of_ebook}}"
+                                               placeholder="Nhập giá ebook" class="form-control">
+                                    </div>
+                                </div>
+                            @else
+                                <div id="div_coin" style="display: block;">
+                                    <div class="form-group">
+                                        <label for="price" class=" form-control-label">
+                                            Giá<b style="color: #ff2e44; font-size: 14px;">(*)</b> -Đơn vị: VNĐ
+                                        </label>
+                                        <input type="number" id="price" name="price" value="{{$book->price}}"
+                                               placeholder="Nhập giá cuốn sách" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sale" class="form-control-label">
+                                            Giảm giá (nếu có) -Đơn vị: VNĐ<b
+                                                    style="color: #ff2e44; font-size: 14px;"></b>
+                                        </label>
+                                        @if(is_null($book->sale))
+                                            <input tyspe="number" id="sale" name="sale" value=""
+                                                   placeholder="Nhập giá khi đã hạ giá" class="form-control">
+                                        @else
+                                            <input type="number" id="sale" name="sale" value="{{$book->sale}}"
+                                                   placeholder="Nhập giá khi đã hạ giá" class="form-control">
+                                        @endif
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price_of_ebook" class="form-control-label">
+                                            Giá ebook <b style="color: #ff2e44; font-size: 14px;">(*)</b> -Đơn vị: VNĐ
+                                        </label>
+                                        <input type="number" id="price_of_ebook" name="price_of_ebook"
+                                               value="{{$book->price_of_ebook}}"
+                                               placeholder="Nhập giá ebook" class="form-control">
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="form-group">
+                                <label for="pages" class=" form-control-label">
+                                    Số trang<b style="color: #ff2e44; font-size: 14px;">(*)</b>
+                                </label>
+                                <input type="number" id="pages" name="pages" value="{{$book->pages}}"
+                                       placeholder="Nhập số trang sách" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="introduction" class=" form-control-label">
+                                    Lời giới thiệu<b style="color: #ff2e44; font-size: 14px;">(*)</b>
+                                </label>
+                                <textarea name="introduction" id="introduction" cols="30" rows="10"
+                                          class="form-control">{{$book->introduce}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="ebook" class=" form-control-label">
+                                    File ebook<b style="color: #ff2e44; font-size: 14px;">
+                                        (Nếu bạn không thay đổi file ebook thì không chọn mục này)
+                                    </b>
+                                </label>
+                                <input type="file" name="ebook" id="ebook" accept="application/pdf">
+                            </div>
+                            <div class="form-group">
+                                <a href="{{url('lecturer/ebook/'. $book->ebook)}}" target="_blank">
+                                    <input type="button" value="Xem chi tiết sách" class="btn btn-info">
+                                </a>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary" id="save">
+                                    <i class="fa fa-dot-circle-o"></i> Thay đổi thông tin sách
+                                </button>
+                                <button type="reset" class="btn btn-danger">
+                                    <i class="fa fa-ban"></i> Nhập lại
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div><!-- .animated -->
+@endsection
+
+@section('script')
+    <script>
+
+        //Chọn ảnh lên và xử lí
+        function showImagePreviewPrevious() {
+            var fileInput = $("#img_previous");
+            if (fileInput !== null) {
+                //Mở cửa sổ và chọn anhr
+                fileInput.trigger("click");
+                fileInput.change(function () {
+                    if (this.files && this.files[0]) {
+                        // Sau khi chọn xong ảnh sẽ chuyển ảnh sang mã Base64 và đọc
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#img_avatar_previous').attr('src', e.target.result);
+                            $('#img_avatar_previous').attr('width', 500);
+                            $('#img_avatar_previous').attr('height', 250);
+                        };
+                        reader.readAsDataURL(this.files[0])
+                    }
+                });
+            }
+        }
+
+        function showImagePreviewRear() {
+            var fileInput = $("#img_rear");
+            if (fileInput !== null) {
+                //Mở cửa sổ và chọn anhr
+                fileInput.trigger("click");
+                fileInput.change(function () {
+                    if (this.files && this.files[0]) {
+                        // Sau khi chọn xong ảnh sẽ chuyển ảnh sang mã Base64 và đọc
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $('#img_avatar_rear').attr('src', e.target.result);
+                            $('#img_avatar_rear').attr('width', 500);
+                            $('#img_avatar_rear').attr('height', 250);
+                        };
+                        reader.readAsDataURL(this.files[0])
+                    }
+                });
+            }
+        }
+
+        function select_type_book() {
+            var type_book = document.getElementById('type_book').value;
+            console.log(type_book);
+            if (type_book == 0) {
+                return free();
+            } else if (type_book == 1) {
+                return coin();
+            }
+        }
+
+        function coin() {
+            document.getElementById('div_coin').style.display = 'block';
+        }
+
+        function free() {
+            document.getElementById('div_coin').style.display = 'none';
+        }
+
+        $(document).ready(function () {
+            $('#form_detail_book').validate({
+                rules: {
+                    name: {
+                        required: true,
+                        maxlength: 200
+                    },
+                    author: {
+                        required: true,
+                        maxlength: 200
+                    },
+                    price: {
+                        required: true,
+                        number: true,
+                        maxlength: 20
+                    },
+                    sale: {
+                        number: true,
+                        maxlength: 20
+                    },
+                    pages: {
+                        required: true,
+                        number: true,
+                        maxlength: 20
+                    },
+                    introduction: {
+                        required: true
+                    },
+                    publication_date: {
+                        required: true,
+                        date: true
+                    }
+                },
+
+                messages: {
+                    name: {
+                        required: "Vui lòng nhập tên cuốn sách",
+                        maxlength: "Không được quá 200 ký tự"
+                    },
+                    author: {
+                        required: "Vui lòng nhập tên tác giả",
+                        maxlength: "Không được quá 200 ký tự"
+                    },
+                    price: {
+                        required: "Vui lòng nhập giá cuốn sách",
+                        number: "Giá sách là số",
+                        maxlength: "Giá sách nhiều nhất là 20 chữ số"
+                    },
+                    sale: {
+                        number: "Giá sách là số",
+                        maxlength: "Giá sách nhiều nhất 20 chữ số"
+                    },
+                    pages: {
+                        required: "Vui lòng nhập vào số trang sách",
+                        number: "Số trang sách là số",
+                        maxlength: "Số trang sách tối đa 20 chữ số"
+                    },
+                    introduction: {
+                        required: "Lời giới thiệu không được để trống"
+                    },
+                    publication_date: {
+                        required: "Hãy nhập ngày xuất bản",
+                        date: "Không đúng định dạng tháng/ngày/năm"
+                    }
+                }
+            });
+        });
+
+        $("#form_detail_book").data("changed", false);
+        // When it changes, set "changed" to true
+        $("#form_detail_book").on("change", function () {
+            $(this).data("changed", true);
+        });
+        $('#form_detail_book').on('submit', function () {
+            if ($(this).data("changed")) {
+                $('#form_detail_book').submit();
+            } else {
+                $.alert("Bạn chưa thay đổi thông tin sách!");
+            }
+            return false;
+        });
+
+        //check form update image
+        $("#form_update_image_previous").data("changed", false);
+        $("#form_update_image_previous").on("change", function () {
+            $(this).data("changed", true);
+        });
+        $('#form_update_image_previous').on('submit', function () {
+            if ($(this).data("changed")) {
+                $('#form_update_image_previous').submit();
+            } else {
+                $.alert("Bạn chưa thay đổi ảnh bìa cuốn sách");
+            }
+            return false;
+        });
+
+        //check form update image
+        $("#form_update_image_rear").data("changed", false);
+        $("#form_update_image_rear").on("change", function () {
+            $(this).data("changed", true);
+        });
+        $('#form_update_image_rear').on('submit', function () {
+            if ($(this).data("changed")) {
+                $('#form_update_image_rear').submit();
+            } else {
+                $.alert("Bạn chưa thay đổi ảnh bìa cuốn sách");
+            }
+            return false;
+        });
+    </script>
+@endsection

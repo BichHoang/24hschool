@@ -1,0 +1,126 @@
+#txt_name_search {
+    padding: 6px;
+    border-radius: 5px;
+    border: solid 1px #999999;
+    height: 40px;
+}
+
+#btn_find {
+    background-color: #2E7D32;
+    margin-left: 1.6%;
+    height: 40px;
+}
+
+#btn_new {
+    background-color: #616161;
+    margin-left: 1.6%;
+    height: 40px;
+}
+
+#btn_offline {
+    background-color: #ac2925;
+    margin-left: 1.6%;
+    height: 40px;
+}
+
+#btn_online {
+    background-color: #dc4735;
+    margin-left: 1.6%;
+    height: 40px;
+}
+
+#title_border {
+    border-left: #147d8e 3px solid;
+    padding-left: 10px;
+}
+
+#btn_save_new {
+    background-color: #727b84;
+    height: 40px;
+    color: #ffffff;
+    border-radius: 8px;
+    width: 80%;
+    padding: 5px;
+}
+
+#btn_enter_answer{
+    background-color: #727b84;
+    height: 40px;
+    color: #ffffff;
+    border-radius: 8px;
+    width: 80%;
+    padding: 5px;
+}
+
+#btn_save{
+    background-color: #727b84;
+    height: 40px;
+    color: #ffffff;
+    border-radius: 8px;
+    width: 80%;
+    padding: 5px;
+}
+
+#btn_express {
+    background-color: #3c8dbc;
+    border-radius: 8px;
+    width: 80%;
+    height: 40px
+}
+
+#btn_vietnamnet {
+    background-color: #3c8dbc;
+    border-radius: 8px;
+    width: 80%;
+    height: 40px
+}
+
+#btn_cancel_new {
+    background-color: #8D6E63;
+    height: 40px;
+    color: #ffffff;
+    border-radius: 8px;
+    width: 80%;
+    padding: 5px;
+}
+
+#btn_come_back {
+    background-color: #00aced;
+    height: 40px;
+    color: #ffffff;
+    border-radius: 8px;
+    width: 80%;
+    padding: 5px;
+}
+
+#btn_insert{
+    background-color: #ac2925;
+    margin-left: 1.6%;
+    height: 40px;
+}
+
+.no-data {
+    color: #af160e;
+    padding-top: 30px;
+    font-family: sans-serif;
+    font-style: italic
+}
+
+.image_date_chose {
+    padding: 6px !important;
+    border-radius: 5px;
+    height: 40px;
+    margin-left: 0%;
+    border: 1px solid #999999;
+    background: #fff url(../images/date.png) no-repeat right;
+}
+
+.select_chose {
+    padding: 6px !important;
+    border-radius: 5px;
+    height: 40px;
+    margin-left: 0%;
+    border: 1px solid #999999;
+}
+
+
